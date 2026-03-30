@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Leads → Web Builder</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=Outfit:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap');
+:root{--bg:#0c0c0e;--s1:#111114;--s2:#17171b;--b1:#1e1e26;--b2:#2a2a38;--gold:#d4a853;--gd:rgba(212,168,83,.11);--gg:rgba(212,168,83,.22);--txt:#e8e5dc;--mut:#777788;--grn:#4caf7d;--gnd:rgba(76,175,125,.12);--red:#e05555;--rdd:rgba(224,85,85,.1);--blu:#5b8fff;--bld:rgba(91,143,255,.1);--pur:#a78bfa;--pud:rgba(167,139,250,.1);--r:9px;}
+*{box-sizing:border-box;margin:0;padding:0;}
+body{background:var(--bg);color:var(--txt);font-family:'Outfit',sans-serif;font-size:14px;height:100vh;display:grid;grid-template-columns:400px 1fr;overflow:hidden;}
+.L{background:var(--s1);border-right:1px solid var(--b1);display:flex;flex-direction:column;overflow:hidden;}
+.Lh{padding:18px 20px 14px;border-bottom:1px solid var(--b1);flex-shrink:0;}
+.logo{display:flex;align-items:center;gap:9px;margin-bottom:3px;}
+.gem{width:28px;height:28px;background:var(--gold);border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px;flex-shrink:0;}
+.logo-t{font-family:'DM Serif Display',serif;font-size:17px;letter-spacing:-.02em;}
+.logo-t span{color:var(--gold);}
+.tag{font-size:11px;color:var(--mut);padding-left:37px;line-height:1.5;}
+.tabs{display:grid;grid-template-columns:1fr 1fr 1fr;border-bottom:1px solid var(--b1);flex-shrink:0;}
+.tab{padding:10px;text-align:center;font-size:11.5px;font-weight:500;color:var(--mut);cursor:pointer;border:none;background:none;border-bottom:2px solid transparent;transition:all .15s;font-family:'Outfit',sans-serif;}
+.tab:hover{color:var(--txt);}
+.tab.on{color:var(--gold);border-bottom-color:var(--gold);}
+.panel{display:none;flex:1;overflow-y:auto;flex-direction:column;}
+.panel.on{display:flex;}
+.panel::-webkit-scrollbar{width:3px;}
+.panel::-webkit-scrollbar-thumb{background:var(--b2);border-radius:2px;}
+label{font-size:11px;font-weight:600;color:var(--mut);text-transform:uppercase;letter-spacing:.07em;display:block;margin-bottom:5px;}
+select,input[type=text],textarea{width:100%;background:var(--bg);border:1px solid var(--b2);border-radius:var(--r);color:var(--txt);font-family:'Outfit',sans-serif;font-size:13px;padding:8px 11px;outline:none;transition:border-color .2s,box-shadow .2s;}
+select:focus,input:focus,textarea:focus{border-color:var(--gold);box-shadow:0 0 0 3px var(--gg);}
+input::placeholder,textarea::placeholder{color:#33333f;}
+textarea{min-height:110px;resize:vertical;line-height:1.6;font-size:12px;}
+select option{background:#18181c;}
+.p16{padding:16px 18px;display:flex;flex-direction:column;gap:13px;}
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.row{display:flex;gap:8px;}
+.btn{padding:9px 14px;border-radius:var(--r);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border:none;transition:all .15s;display:flex;align-items:center;gap:5px;justify-content:center;}
+.btn-g{background:var(--gold);color:#0c0c0e;flex:1;}
+.btn-g:hover{background:#e0b65e;}
+.btn-g:disabled{background:#2a2a35;color:var(--mut);cursor:not-allowed;}
+.btn-o{background:var(--s2);border:1px solid var(--b2);color:var(--mut);}
+.btn-o:hover{border-color:var(--gold);color:var(--gold);}
+.btn-pur{background:var(--pud);border:1px solid rgba(167,139,250,.3);color:var(--pur);}
+.btn-pur:hover{background:rgba(167,139,250,.2);}
+.info{border-radius:8px;padding:9px 11px;font-size:11.5px;line-height:1.5;display:flex;gap:7px;}
+.info-g{background:var(--gnd);border:1px solid rgba(76,175,125,.2);color:#70c99a;}
+.info-a{background:var(--gd);border:1px solid rgba(212,168,83,.18);color:#b89840;}
+.info-p{background:var(--pud);border:1px solid rgba(167,139,250,.2);color:#b8a8f0;}
+.or{display:flex;align-items:center;gap:7px;color:var(--mut);font-size:11px;}
+.or::before,.or::after{content:'';flex:1;height:1px;background:var(--b2);}
+.leads-hdr{display:flex;align-items:center;justify-content:space-between;}
+.cnt{background:var(--gd);border:1px solid rgba(212,168,83,.25);color:var(--gold);font-size:11px;padding:2px 8px;border-radius:20px;font-weight:500;}
+.sel-all{font-size:11px;color:var(--mut);cursor:pointer;background:none;border:none;font-family:'Outfit',sans-serif;text-decoration:underline;text-underline-offset:2px;}
+.sel-all:hover{color:var(--gold);}
+.leads-wrap{display:flex;flex-direction:column;gap:7px;}
+.lc{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 13px;cursor:pointer;transition:all .12s;position:relative;user-select:none;}
+.lc:hover{border-color:var(--b2);}
+.lc.sel{border-color:var(--gold);background:var(--gd);}
+.lc.gen{border-color:var(--blu);background:var(--bld);opacity:.75;cursor:default;}
+.lc.done{border-color:var(--grn);background:var(--gnd);}
+.lc.cached{border-color:var(--pur);background:var(--pud);}
+.ln{font-size:13px;font-weight:500;color:var(--txt);margin-bottom:2px;padding-right:22px;}
+.lm{font-size:11px;color:var(--mut);display:flex;gap:8px;flex-wrap:wrap;margin-bottom:5px;}
+.stars{color:var(--gold);}
+.badges{display:flex;gap:4px;flex-wrap:wrap;}
+.badge{font-size:10px;padding:2px 6px;border-radius:4px;font-weight:500;background:var(--b2);color:var(--mut);}
+.br{background:var(--rdd);color:#e08080;}
+.bg{background:var(--gnd);color:#70c99a;}
+.bb{background:var(--bld);color:var(--blu);}
+.bp{background:var(--pud);color:var(--pur);}
+.chk{position:absolute;top:10px;right:11px;width:15px;height:15px;border:1.5px solid var(--b2);border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:9px;transition:all .12s;}
+.lc.sel .chk{background:var(--gold);border-color:var(--gold);color:#0c0c0e;}
+.lc.done .chk,.lc.cached .chk{background:var(--grn);border-color:var(--grn);color:#fff;}
+.mem-section{display:flex;flex-direction:column;gap:10px;}
+.mem-card{background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:12px 14px;}
+.mem-name{font-size:12px;font-weight:500;color:var(--txt);margin-bottom:4px;}
+.mem-detail{font-size:11px;color:var(--mut);line-height:1.6;}
+.empty-mem{background:var(--s2);border:1px dashed var(--b2);border-radius:8px;padding:20px;text-align:center;color:var(--mut);font-size:12px;line-height:1.6;}
+.sbar{padding:9px 18px;border-top:1px solid var(--b1);font-size:12px;color:var(--mut);flex-shrink:0;display:flex;align-items:center;gap:7px;min-height:36px;}
+.sd{width:6px;height:6px;border-radius:50%;background:var(--mut);flex-shrink:0;}
+.sd.g{background:var(--grn);box-shadow:0 0 5px var(--grn);}
+.sd.a{background:var(--gold);box-shadow:0 0 5px var(--gold);animation:blink 1s infinite;}
+.sd.p{background:var(--pur);box-shadow:0 0 5px var(--pur);}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.4}}
+.R{display:flex;flex-direction:column;overflow:hidden;}
+.rb{padding:9px 15px;border-bottom:1px solid var(--b1);display:flex;align-items:center;gap:9px;flex-shrink:0;background:var(--s1);}
+.rp{padding:4px 13px;border-radius:20px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid transparent;background:none;color:var(--mut);font-family:'Outfit',sans-serif;transition:all .15s;}
+.rp.on{background:var(--gold);color:#0c0c0e;border-color:var(--gold);}
+.sp{flex:1;}
+.ib{padding:4px 11px;border-radius:7px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid var(--b2);background:transparent;color:var(--mut);transition:all .15s;font-family:'Outfit',sans-serif;}
+.ib:hover{border-color:var(--gold);color:var(--gold);}
+.ib.hi{background:var(--gd);border-color:rgba(212,168,83,.35);color:var(--gold);}
+.pw{flex:1;position:relative;overflow:hidden;}
+#pf{width:100%;height:100%;border:none;display:block;}
+.ov{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;background:var(--bg);}
+.oi{font-size:36px;color:var(--b2);}
+.ot{font-family:'DM Serif Display',serif;font-size:19px;color:#252530;}
+.os{font-size:12px;color:#252530;text-align:center;max-width:280px;line-height:1.6;}
+.psteps{display:flex;flex-direction:column;gap:9px;width:260px;margin-top:4px;}
+.ps{display:flex;align-items:center;gap:9px;font-size:12px;color:#252530;transition:color .3s;}
+.ps.on{color:var(--gold);}
+.ps.dn{color:var(--grn);}
+.pd{width:6px;height:6px;border-radius:50%;background:#222230;flex-shrink:0;transition:background .3s;}
+.ps.on .pd{background:var(--gold);animation:blink 1s infinite;}
+.ps.dn .pd{background:var(--grn);}
+#cp{display:none;flex:1;overflow-y:auto;background:#0a0a0c;}
+#cp pre{font-family:'DM Mono',monospace;font-size:11px;line-height:1.8;color:#888898;padding:18px;white-space:pre-wrap;word-break:break-all;}
+</style>
+</head>
+<body>
+<div class="L">
+  <div class="Lh">
+    <div class="logo"><div class="gem">✦</div><div class="logo-t">Leads<span>→</span>Web</div></div>
+    <div class="tag">Reviews → Websites · mit Lernkurve · by CWConsulting</div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('leads')">📊 Leads</button>
+    <button class="tab" onclick="switchTab('manual')">✏️ Manuell</button>
+    <button class="tab" onclick="switchTab('memory')">🧠 Memory</button>
+  </div>
+
+  <!-- LEADS -->
+  <div class="panel on" id="p-leads">
+    <div class="p16">
+      <div class="info info-g"><span>🔗</span><span><strong>Leads – Friseure</strong> · Augsburg · <code style="background:rgba(255,255,255,.07);padding:1px 4px;border-radius:3px">webseite_vorhanden = Nein</code> · Lila = gecacht</span></div>
+      <div class="g2">
+        <div><label>Min. Rating</label><select id="f-r" onchange="applyFilter()"><option value="0">Alle</option><option value="4" selected>≥ 4.0 ⭐</option><option value="4.5">≥ 4.5 ⭐</option></select></div>
+        <div><label>Min. Reviews</label><select id="f-v" onchange="applyFilter()"><option value="0">Alle</option><option value="10" selected>≥ 10</option><option value="50">≥ 50</option><option value="100">≥ 100</option></select></div>
+      </div>
+      <div class="row">
+        <button class="btn btn-g" onclick="genSelected()" id="gen-btn" disabled>✦ Generieren</button>
+        <button class="btn btn-o" onclick="genSelected(true)" id="gen-force" disabled title="Neu generieren (Cache ignorieren)">↺ Neu</button>
+      </div>
+      <div class="leads-hdr">
+        <div style="display:flex;align-items:center;gap:8px"><label style="margin:0">Ohne Website</label><span class="cnt" id="lcnt">0</span></div>
+        <button class="sel-all" onclick="toggleAll()">Alle wählen</button>
+      </div>
+      <div class="leads-wrap" id="llist"></div>
+    </div>
+  </div>
+
+  <!-- MANUAL -->
+  <div class="panel" id="p-manual">
+    <div class="p16">
+      <div class="info info-a"><span>💡</span><span>Maps URL eingeben oder Reviews einfügen. Claude lernt aus jedem Projekt.</span></div>
+      <div><label>Google Maps URL</label><input type="text" id="m-url" placeholder="https://maps.google.com/?cid=... oder maps.app.goo.gl/..."></div>
+      <div class="or">oder Reviews direkt einfügen</div>
+      <div><label>Reviews (von Google kopiert)</label><textarea id="m-rev" placeholder="Reviews hier einfügen — Claude erkennt das Format.&#10;&#10;Beispiel:&#10;Ibrahim C. · ★★★★★ · vor 1 Monat&#10;Absolut sensationell!..."></textarea></div>
+      <div class="g2">
+        <div><label>Name</label><input type="text" id="m-name" placeholder="Wird erkannt"></div>
+        <div><label>Ort</label><input type="text" id="m-loc" placeholder="z.B. Augsburg"></div>
+      </div>
+      <div class="g2">
+        <div><label>Branche</label><select id="m-cat"><option value="auto">Automatisch</option><option value="friseur">Friseur / Barbershop</option><option value="restaurant">Restaurant / Café</option><option value="handwerk">Handwerk</option><option value="beauty">Beauty / Kosmetik</option><option value="fitness">Fitness</option></select></div>
+        <div><label>Design-Stil</label><select id="m-style"><option value="auto">Aus Reviews ableiten</option><option value="luxury">Luxuriös</option><option value="modern">Modern</option><option value="warm">Warm</option><option value="bold">Bold</option></select></div>
+      </div>
+      <div><label>Zusatzinfos (optional)</label><input type="text" id="m-extra" placeholder="Öffnungszeiten, Tel., Adresse, Instagram..."></div>
+      <div class="g2">
+        <div><label>Sprache</label><select id="m-lang"><option value="de">Deutsch</option><option value="en">English</option></select></div>
+        <div><label>In Memory speichern</label><select id="m-save"><option value="yes">Ja (lernen)</option><option value="no">Nein</option></select></div>
+      </div>
+      <button class="btn btn-g" onclick="genManual()" id="m-btn">✦ Website generieren</button>
+    </div>
+  </div>
+
+  <!-- MEMORY -->
+  <div class="panel" id="p-memory">
+    <div class="p16">
+      <div class="info info-p"><span>🧠</span><span>Jede generierte Website wird gespeichert. Claude lernt daraus für bessere, schnellere Resultate.</span></div>
+      <div class="row">
+        <button class="btn btn-pur" onclick="loadMemory()" id="mem-btn">🔄 Memory laden</button>
+        <button class="btn btn-o" onclick="document.getElementById('mem-sec').innerHTML='<div class=empty-mem>Memory geleert.</div>'">✕</button>
+      </div>
+      <div><label>Lernstatus</label>
+        <div id="learn-stats" style="background:var(--s2);border:1px solid var(--b1);border-radius:8px;padding:10px 12px;font-size:12px;color:var(--mut);line-height:1.8;">
+          Noch kein Memory geladen.
+        </div>
+      </div>
+      <div class="mem-section" id="mem-sec"><div class="empty-mem">Klicke „Memory laden" um gespeicherte Projekte zu sehen.</div></div>
+    </div>
+  </div>
+
+  <div class="sbar"><div class="sd" id="sd"></div><span id="stxt">Bereit · 17 Leads geladen</span></div>
+</div>
+
+<!-- RIGHT -->
+<div class="R">
+  <div class="rb" id="rb" style="display:none">
+    <button class="rp on" id="rp-pre" onclick="switchView('pre')">Vorschau</button>
+    <button class="rp" id="rp-cod" onclick="switchView('cod')">HTML</button>
+    <div class="sp"></div>
+    <span id="cur-name" style="font-size:12px;color:var(--mut);max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;"></span>
+    <button class="ib" onclick="cpHTML()">📋 Kopieren</button>
+    <button class="ib hi" onclick="dlHTML()">⬇ Download</button>
+  </div>
+  <div class="pw">
+    <div class="ov" id="ov"><div class="oi">✦</div><div class="ot">Lead wählen & generieren</div><div class="os">Wähle Leads aus der Liste oder nutze den manuellen Builder. Claude lernt aus jedem Projekt.</div></div>
+    <iframe id="pf" style="display:none"></iframe>
+  </div>
+  <div id="cp"><pre id="cpre"></pre></div>
+</div>
+
+<script>
+const LEADS=[
+  {id:"recXQxsbqs8IPY72u",name:"Gentleman's Barber Shop - das Original",rating:4.7,reviews:335,address:"Von-Richthofen-Straße 38, 86159 Augsburg",maps:"https://maps.google.com/?cid=15128579449317182440",cat:"friseur"},
+  {id:"recLgPgJXCTK70yw1",name:"Masters of Hair / Baderwastl",rating:4.9,reviews:149,address:"Neuburger Str. 18, 86167 Augsburg",maps:"https://maps.google.com/?cid=13143941400730127019",cat:"friseur"},
+  {id:"recbIpTRwL27WZIoQ",name:"Friseur BIO Coiffeur Styliani",rating:4.8,reviews:214,address:"Müllerstraße 6, 86153 Augsburg",maps:"https://maps.google.com/?cid=10414524884804722928",cat:"friseur"},
+  {id:"recOlJEzVRIngtAnc",name:"Friseursalon Chris",rating:4.8,reviews:69,address:"Bismarckstraße 5/1/2, 86159 Augsburg",maps:"https://maps.google.com/?cid=12057391520511847034",cat:"friseur"},
+  {id:"rec5SulshmdiZqkJV",name:"Hair by Hüseyin",rating:4.9,reviews:62,address:"Neuburger Str. 33, 86167 Augsburg",maps:"https://maps.google.com/?cid=8548807523555259798",cat:"friseur"},
+  {id:"recOrZWbOhddofEZc",name:"Dutz Hairstyle",rating:4.7,reviews:57,address:"Klausenberg 14, 86199 Augsburg",maps:"https://maps.google.com/?cid=10216053916290662386",cat:"friseur"},
+  {id:"recQ63wRnuioSGl7n",name:"Emis Hair Design",rating:4.6,reviews:36,address:"Hallstraße 14, 86150 Augsburg",maps:"https://maps.google.com/?cid=2228333358488581898",cat:"friseur"},
+  {id:"recJmy0weBX2VG4Yh",name:"Mo Ina - Kosmetik",rating:4.3,reviews:33,address:"Gablonzer Str. 2, 86356 Neusäß",maps:"https://maps.google.com/?cid=15925287174887474079",cat:"kosmetik"},
+  {id:"recZBqCaAUeCKckV4",name:"Mickys Haarmonie",rating:4.9,reviews:28,address:"Schmiedgasse 13, 86150 Augsburg",maps:"https://maps.google.com/?cid=12932916182648273298",cat:"friseur"},
+  {id:"recDOWN85gksjEFpo",name:"Salon Perocco",rating:4.9,reviews:19,address:"Georgenstraße 47, 86152 Augsburg",maps:"https://maps.google.com/?cid=13437290029381519464",cat:"friseur"},
+  {id:"rec6kkyMmyyuqV3ue",name:"Olafe Haare und Makeup",rating:4.7,reviews:44,address:"Frauentorstraße 8, 86152 Augsburg",maps:"https://maps.google.com/?cid=9326879859085754950",cat:"friseur"},
+  {id:"rec0w30RYLRQtetfn",name:"Friseur & Beauty Inci",rating:4.2,reviews:72,address:"Wertachstraße 25, 86153 Augsburg",maps:"https://maps.google.com/?cid=1468918362469255854",cat:"friseur"},
+  {id:"recONXz0yTWl6wzrT",name:"Salon Schnipp Schnapp",rating:4.4,reviews:14,address:"Badanger 1, 86157 Augsburg",maps:"https://maps.google.com/?cid=5123588335371480874",cat:"friseur"},
+  {id:"recDZMDLq7W1i6hWm",name:"Friseur HaarVergnügen",rating:4.7,reviews:13,address:"Holzweg 61, 86156 Augsburg",maps:"https://maps.google.com/?cid=10328907792263316613",cat:"friseur"},
+  {id:"recWe6R05oZu8nx0T",name:"Friseursalon Raphael",rating:4.8,reviews:13,address:"Bauernbräustraße 4, 86316 Friedberg",maps:"https://maps.google.com/?cid=5918859170462146115",cat:"friseur"},
+  {id:"recaxc4qRcVb13Cso",name:"Haar und Frisierstube von Kamen",rating:5,reviews:13,address:"Imhofstraße 75, 86159 Augsburg",maps:"https://maps.google.com/?cid=7016425889593704360",cat:"friseur"},
+  {id:"recVEXNgzBjfC6fa6",name:"BR-Extension",rating:4.5,reviews:10,address:"Vogelmauer 33A, 86152 Augsburg",maps:"https://maps.google.com/?cid=17393588071810291186",cat:"friseur"},
+];
+
+let visible=[...LEADS],selected=new Set(),genHTML='',curName='',progT=null,memCache=[];
+
+applyFilter();
+
+function applyFilter(){
+  const r=parseFloat(document.getElementById('f-r').value),v=parseInt(document.getElementById('f-v').value);
+  visible=LEADS.filter(l=>l.rating>=r&&l.reviews>=v);
+  selected.clear();render();
+}
+
+function render(){
+  const list=document.getElementById('llist');
+  document.getElementById('lcnt').textContent=visible.length;
+  const any=selected.size>0;
+  document.getElementById('gen-btn').disabled=!any;
+  document.getElementById('gen-force').disabled=!any;
+  list.innerHTML='';
+  visible.forEach(l=>{
+    const s=selected.has(l.id),g=l._gen,d=l._done,c=l._cached;
+    const st='★'.repeat(Math.min(5,Math.round(l.rating)));
+    const div=document.createElement('div');
+    div.className='lc'+(s?' sel':'')+(g?' gen':'')+(d?' done':'')+(c&&!d?' cached':'');
+    div.id='lc-'+l.id;
+    if(!g)div.onclick=()=>toggle(l.id);
+    div.innerHTML=`<div class="ln">${l.name}</div><div class="lm"><span class="stars">${st} ${l.rating}</span><span>${l.reviews} Reviews</span><span>${l.address.split(',').slice(-1)[0].trim()}</span></div><div class="badges">${l.maps?'<span class="badge br">📍 Maps</span>':''}<span class="badge br">kein Website</span>${c?'<span class="badge bp">✦ gecacht</span>':''}${d?'<span class="badge bg">✓ generiert</span>':''}${g?'<span class="badge bb">⏳ läuft...</span>':''}</div><div class="chk">${(s||d||c)?'✓':''}</div>`;
+    list.appendChild(div);
+  });
+}
+
+function toggle(id){
+  const l=LEADS.find(x=>x.id===id);if(!l||l._gen)return;
+  if(selected.has(id))selected.delete(id);else selected.add(id);
+  render();
+}
+
+function toggleAll(){
+  const e=visible.filter(l=>!l._gen);
+  if(selected.size===e.length)selected.clear();else e.forEach(l=>selected.add(l.id));
+  render();
+}
+
+async function genSelected(force=false){
+  const toGen=LEADS.filter(l=>selected.has(l.id));if(!toGen.length)return;
+  document.getElementById('gen-btn').disabled=true;
+  document.getElementById('gen-force').disabled=true;
+  document.getElementById('gen-btn').textContent=`⏳ ${toGen.length}x...`;
+  for(const lead of toGen){
+    if(!force){
+      const cached=memCache.find(m=>m.maps===lead.maps||m.name?.toLowerCase()===lead.name?.toLowerCase());
+      if(cached?.html){
+        lead._cached=true;lead._done=true;lead._html=cached.html;
+        selected.delete(lead.id);render();
+        genHTML=cached.html;curName=lead.name;showPreview(cached.html);
+        setStatus(`✦ ${lead.name} aus Cache`,`p`);continue;
+      }
+    }
+    lead._gen=true;selected.delete(lead.id);render();
+    setStatus(`Generiere: ${lead.name}...`,`a`);
+    const ctx=buildMemCtx(lead.cat);
+    const html=await genLead(lead,ctx);
+    lead._gen=false;
+    if(html){lead._done=true;lead._html=html;genHTML=html;curName=lead.name;showPreview(html);memCache.push({name:lead.name,maps:lead.maps,cat:lead.cat,html,notes:`${lead.reviews} Reviews ${lead.rating}★`});updateLearnStats();setStatus(`✓ ${lead.name} gespeichert`,`g`);}
+    else setStatus(`⚠ Fehler bei ${lead.name}`);
+    render();
+  }
+  document.getElementById('gen-btn').textContent='✦ Generieren';
+  document.getElementById('gen-btn').disabled=selected.size===0;
+  document.getElementById('gen-force').disabled=selected.size===0;
+}
+
+function buildMemCtx(cat){
+  const r=memCache.filter(m=>m.cat===cat).slice(-3);
+  return r.length?`\n\nLERN-KONTEXT aus ${r.length} ähnlichen Projekten:\n${r.map(m=>`- ${m.name}: ${m.notes||'generiert'}`).join('\n')}\nBaue auf diesen Erfahrungen auf und verbessere Stil, copy und Struktur.`:'';
+}
+
+async function genLead(lead,ctx=''){
+  showLoading();
+  const p=`Du bist ein Top-Webdesigner.\n\nName: ${lead.name}\nBranche: ${lead.cat}\nAdresse: ${lead.address}\nRating: ${lead.rating}⭐ (${lead.reviews} Reviews)\nMaps: ${lead.maps}${ctx}\n\nNutze web_search für Reviews und Infos.\n\nVollständige One-Page-Website als HTML: Hero → Über uns → Leistungen → Testimonials → Kontakt.\nNur HTML, beginne mit <!DOCTYPE html>.`;
+  try{
+    let res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:p}]})});
+    let data=await res.json();
+    if(data.stop_reason==='tool_use'){
+      const tr=data.content.filter(b=>b.type==='tool_use').map(b=>({type:'tool_result',tool_use_id:b.id,content:'done'}));
+      const r2=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:p},{role:'assistant',content:data.content},{role:'user',content:tr}]})});
+      data=await r2.json();
+    }
+    let html=data.content?.filter(b=>b.type==='text').map(b=>b.text).join('')||'';
+    html=html.replace(/^```html\s*/i,'').replace(/\s*```\s*$/i,'').trim();
+    return html&&html.includes('<html')?html:null;
+  }catch(e){console.error(e);return null;}
+}
+
+async function genManual(){
+  const url=document.getElementById('m-url').value.trim(),rev=document.getElementById('m-rev').value.trim();
+  const name=document.getElementById('m-name').value.trim(),loc=document.getElementById('m-loc').value.trim();
+  const cat=document.getElementById('m-cat').value,style=document.getElementById('m-style').value;
+  const extra=document.getElementById('m-extra').value.trim(),lang=document.getElementById('m-lang').value;
+  const save=document.getElementById('m-save').value;
+  if(!url&&!rev){alert('Bitte URL oder Reviews eingeben.');return;}
+  const btn=document.getElementById('m-btn');btn.disabled=true;btn.textContent='⏳...';
+  setStatus('Generiere...','a');showLoading();
+  const styleMap={auto:'Stil aus Reviews ableiten',luxury:'Luxuriös & Premium',modern:'Modern & Clean',warm:'Warm & Einladend',bold:'Bold & Markant'};
+  const ctx=buildMemCtx(cat);
+  const data=url?`Maps URL: ${url}\nNutze web_search.${name?' Name: '+name:''}`:`Reviews:\n${rev}\n${name?'Name: '+name:''}\n${loc?'Ort: '+loc:''}`;
+  const p=`Du bist ein Top-Webdesigner.\n\n${data}\n\nStil: ${styleMap[style]}\nSprache: ${lang==='de'?'Deutsch':'English'}\n${extra?'Extras: '+extra:''}\n${ctx}\n\nVollständige One-Page-Website als HTML: Hero → Über uns → Leistungen → Testimonials → Kontakt.\nNur HTML, beginne mit <!DOCTYPE html>.`;
+  try{
+    const body={model:'claude-sonnet-4-20250514',max_tokens:8000,messages:[{role:'user',content:p}]};
+    if(url)body.tools=[{type:'web_search_20250305',name:'web_search'}];
+    let res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});
+    let d=await res.json();
+    if(d.stop_reason==='tool_use'){
+      const tr=d.content.filter(b=>b.type==='tool_use').map(b=>({type:'tool_result',tool_use_id:b.id,content:'done'}));
+      const r2=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:8000,tools:[{type:'web_search_20250305',name:'web_search'}],messages:[{role:'user',content:p},{role:'assistant',content:d.content},{role:'user',content:tr}]})});
+      d=await r2.json();
+    }
+    let html=d.content?.filter(b=>b.type==='text').map(b=>b.text).join('')||'';
+    html=html.replace(/^```html\s*/i,'').replace(/\s*```\s*$/i,'').trim();
+    if(!html||!html.includes('<'))throw new Error('Ungültige Antwort');
+    genHTML=html;curName=name||'website';showPreview(html);
+    if(save==='yes'&&(name||url)){memCache.push({name:name||url,maps:url,cat,html,notes:`Manuell ${cat}`});updateLearnStats();}
+    setStatus('✓ Generiert','g');
+  }catch(e){showError(e.message);setStatus('Fehler: '+e.message);}
+  btn.disabled=false;btn.textContent='✦ Website generieren';
+}
+
+async function loadMemory(){
+  const btn=document.getElementById('mem-btn');btn.textContent='⏳...';btn.disabled=true;
+  setStatus('Lade Memory...','a');
+  // Local session memory (Airtable save needs backend; showing session memory)
+  const sec=document.getElementById('mem-sec');
+  if(!memCache.length){sec.innerHTML='<div class="empty-mem">Noch keine Websites in dieser Session generiert.<br>Generiere Websites um die Lernkurve zu starten.</div>';}
+  else{
+    sec.innerHTML=memCache.map(m=>`<div class="mem-card"><div class="mem-name">${m.name}</div><div class="mem-detail"><span style="background:var(--pud);color:var(--pur);font-size:10px;padding:1px 6px;border-radius:3px;margin-right:4px">${m.cat}</span>${m.notes||''}</div></div>`).join('');
+  }
+  updateLearnStats();
+  setStatus(`${memCache.length} Memory-Einträge`,memCache.length?'g':'');
+  btn.textContent='🔄 Memory laden';btn.disabled=false;
+}
+
+function updateLearnStats(){
+  const cats={};memCache.forEach(m=>{cats[m.cat]=(cats[m.cat]||0)+1;});
+  const stats=document.getElementById('learn-stats');
+  if(!memCache.length){stats.textContent='Noch kein Memory.';return;}
+  stats.innerHTML=`<strong style="color:var(--txt)">${memCache.length} Websites generiert</strong><br>${Object.entries(cats).map(([k,v])=>`<span style="color:var(--pur)">✦ ${k}</span>: ${v}x`).join(' · ')}<br><span style="font-size:10px;color:var(--mut)">Claude nutzt dieses Wissen automatisch für bessere nächste Generierungen.</span>`;
+}
+
+function switchTab(t){
+  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('on',['leads','manual','memory'][i]===t));
+  ['leads','manual','memory'].forEach(id=>document.getElementById('p-'+id).classList.toggle('on',id===t));
+}
+function setStatus(txt,type=''){document.getElementById('stxt').textContent=txt;const d=document.getElementById('sd');d.className='sd'+(type?' '+type:'');}
+const STEPS=['Infos & Reviews recherchieren','Branche & USPs analysieren','Design & HTML generieren'];
+function showLoading(){
+  document.getElementById('ov').innerHTML=`<div class="ot" style="color:#333345;font-size:17px">Claude generiert...</div><div class="psteps">${STEPS.map((s,i)=>`<div class="ps${i===0?' on':''}" id="ps${i}"><div class="pd"></div><span>${s}</span></div>`).join('')}</div>`;
+  document.getElementById('ov').style.display='flex';document.getElementById('pf').style.display='none';document.getElementById('rb').style.display='none';
+  clearInterval(progT);let cur=0;
+  progT=setInterval(()=>{if(cur<STEPS.length-1){document.getElementById('ps'+cur)?.classList.replace('on','dn');cur++;document.getElementById('ps'+cur)?.classList.add('on');}},5500);
+}
+function showError(msg){document.getElementById('ov').innerHTML=`<div style="font-size:28px;color:var(--red)">⚠</div><div class="ot" style="color:var(--red)">Fehler</div><div class="os" style="color:#885555">${msg}</div>`;document.getElementById('ov').style.display='flex';}
+function showPreview(html){
+  clearInterval(progT);document.getElementById('ov').style.display='none';
+  const f=document.getElementById('pf');f.style.display='block';f.srcdoc=html;
+  document.getElementById('rb').style.display='flex';document.getElementById('cur-name').textContent=curName;
+  document.getElementById('cpre').textContent=html;
+  document.getElementById('rp-pre').classList.add('on');document.getElementById('rp-cod').classList.remove('on');
+  document.getElementById('pf').style.display='block';document.getElementById('cp').style.display='none';
+}
+function switchView(v){
+  document.getElementById('rp-pre').classList.toggle('on',v==='pre');document.getElementById('rp-cod').classList.toggle('on',v==='cod');
+  document.getElementById('pf').style.display=v==='pre'?'block':'none';document.getElementById('cp').style.display=v==='cod'?'block':'none';
+}
+function cpHTML(){navigator.clipboard.writeText(genHTML).then(()=>{const b=event.target,o=b.textContent;b.textContent='✓ Kopiert!';b.style.color='var(--grn)';setTimeout(()=>{b.textContent=o;b.style.color=''},2000);});}
+function dlHTML(){const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([genHTML],{type:'text/html'}));a.download=(curName||'website').toLowerCase().replace(/\s+/g,'-').replace(/[^a-z0-9-]/g,'')+'.html';a.click();}
+</script>
+</body>
+</html>
