@@ -570,7 +570,7 @@ function buildTemplate() {
   html=html.replace('<link rel="stylesheet" href="style.css">',
     `<style>\n${MVP_CSS}\n:root { --color-primary: ${selColor}; --color-primary-hover: ${selColor}dd; --color-primary-light: ${selColor}22; }\n</style>`);
   html=html.replace('<script src="main.js"></script>',
-    `<script>\n${MVP_JS}\n</script>`);
+    `<script>\n${MVP_JS}\n<\/script>`);
 
   // Replace logo SVGs
   html=html.replace(/<svg viewBox="0 0 40 40" width="36"[\s\S]*?<\/svg>\s*\n\s*<span class="logo__name">/,
